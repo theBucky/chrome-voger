@@ -7,3 +7,7 @@
 - Before making code changes, read the relevant code and the most recent constraints, and follow the nearest `AGENTS.md` in the directory tree.
 - Keep changes focused. Do not slip in unrelated refactors along the way.
 - When committing, do not add any co-author attribution, and do not reveal the identity of the agent in commit messages, PR descriptions, or any explanatory text.
+
+## Reference docs
+
+- Reach `docs/specs/index.md` for outline; dig `docs/specs/sections` for more details.
