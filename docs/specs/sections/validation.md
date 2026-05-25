@@ -1,8 +1,15 @@
 # Validation
 
-## Static checks
+Validation confirms that the extension parses correctly and that the WebRTC and YouTube behaviors run as expected.
 
-Run these checks after implementation changes:
+## Prerequisites
+
+- Node.js, Python 3, and Chrome are installed.
+- The repository is available on the local machine.
+
+## Run static checks
+
+Run the following commands from the repository root after any source change:
 
 ```bash
 python3 -m json.tool manifest.json >/dev/null
@@ -11,24 +18,25 @@ node --check src/webrtc-blocker.js
 node --check src/youtube-quality.js
 ```
 
-## Browser checks
+All four commands must exit without error.
 
-Load the repository root from `chrome://extensions` with developer mode enabled.
+## Verify browser behavior
 
-Check WebRTC behavior:
+To load the extension and confirm runtime behavior in Chrome:
 
-- Open a WebRTC leak test page.
-- Confirm no local IP address appears.
-- Run `new RTCPeerConnection()` in the page console and confirm it throws.
+1. Open `chrome://extensions` and enable developer mode.
+2. Click **Load unpacked** and select the repository root.
+3. Confirm WebRTC behavior:
+   - Open a WebRTC leak test page.
+   - Confirm that no local IP address appears.
+   - In the page console, run `new RTCPeerConnection()` and confirm that the call throws.
+4. Confirm YouTube behavior:
+   - Open a YouTube video that exposes 4k or 8k.
+   - Confirm that the player moves to the highest exposed quality.
+   - Navigate to another video in the same tab and confirm that enforcement runs again.
 
-Check YouTube behavior:
+## Known limitations
 
-- Open a YouTube video with 4k or 8k available.
-- Confirm the player moves to the highest exposed quality.
-- Navigate to another video in the same tab and confirm enforcement runs again.
-
-## Known limits
-
-- YouTube player methods are private and may change.
-- The extension does not implement YouTube menu automation.
-- The extension does not provide a disable switch while enabled.
+- The YouTube page player methods are private, and the YouTube team can change the methods at any time.
+- The extension does not automate the YouTube quality menu.
+- The extension does not provide a runtime disable switch.

@@ -1,31 +1,35 @@
-# YouTube Quality Enforcement
+# YouTube quality enforcement
+
+YouTube quality enforcement sets a YouTube watch page to the highest player quality exposed for the current video. The script avoids menu automation and does not add extension UI.
 
 ## Scope
 
-`src/youtube-quality.js` only targets YouTube watch pages. The script does not
-open YouTube menus, click controls, parse localized UI text, or add extension UI.
+The `src/youtube-quality.js` script targets YouTube watch pages only. The script does not:
+
+- Open YouTube menus.
+- Click player controls.
+- Parse localized UI text.
+- Add extension UI.
 
 ## Player access
 
-The script runs in the main world and reads the page player from:
+The script runs in the main world and reads the page player from the following selector:
 
 ```text
 .html5-video-player
 ```
 
-It uses YouTube's page-exposed player methods when available:
+The script calls the following methods exposed by the page player when available:
 
 - `getAvailableQualityLevels()`
 - `setPlaybackQualityRange(quality)`
 - `setPlaybackQuality(quality)`
 
-These methods are not part of the supported public IFrame API. The implementation
-therefore treats missing methods as a retryable failure, not as a reason to add UI
-automation.
+These methods are not part of the supported public IFrame API. The implementation treats missing methods as a retryable failure rather than a reason to introduce UI automation.
 
-## Quality order
+## Quality priority order
 
-The implementation uses this priority order:
+The script selects the first available quality from this list:
 
 1. `highres`
 2. `hd4320`
@@ -39,27 +43,23 @@ The implementation uses this priority order:
 10. `small`
 11. `tiny`
 
-YouTube can expose 8k video as `highres` in `adaptiveFormats`, for example
-`qualityLabel: "4320p60"` with `quality: "highres"`. `highres` therefore wins
-over named HD levels.
+YouTube can expose 8k video as `highres` in `adaptiveFormats`. For example, a stream with `qualityLabel: "4320p60"` reports `quality: "highres"`. For this reason, `highres` ranks above the named HD levels.
 
 ## Scheduling
 
-The script schedules a quality attempt when:
+The script schedules a quality attempt in the following situations:
 
-- the script first loads,
-- YouTube emits `yt-navigate-finish`,
-- a video element emits `loadedmetadata`.
+- The script loads for the first time.
+- YouTube emits the `yt-navigate-finish` event.
+- A video element emits the `loadedmetadata` event.
 
-Non-watch pages do not schedule quality work. If the player or quality list is
-not ready, the script retries with bounded delays. After a successful setter
-call, the script schedules a few rechecks to counter YouTube's own automatic
-quality changes.
+Non-watch pages do not schedule quality work. When the player or the quality list is not ready, the script retries with bounded delays. After a successful setter call, the script schedules several rechecks to counter automatic quality changes by YouTube.
 
-## Acceptance checks
+## Verification
 
-- A video with 8k exposed as `highres` receives `highres`.
-- A video with `hd2160` available and no higher explicit option receives
-  `hd2160`.
-- YouTube same-tab navigation triggers a new quality attempt.
+Confirm the following results after loading the extension:
+
+- A video that exposes 8k as `highres` receives `highres`.
+- A video that exposes `hd2160` and no higher level receives `hd2160`.
+- Same-tab navigation on YouTube triggers a new quality attempt.
 - Non-watch YouTube pages do not perform quality work.

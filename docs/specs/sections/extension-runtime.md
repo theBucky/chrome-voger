@@ -1,34 +1,31 @@
-# Extension Runtime
+# Extension runtime
 
-## Manifest
+The extension runtime defines how Chrome Voger registers with Chrome, when the service worker applies the WebRTC policy, and which world the content scripts run in.
 
-`manifest.json` defines a Manifest V3 extension with:
+## Manifest configuration
 
-- `privacy` permission for Chrome WebRTC IP handling policy.
+The `manifest.json` file declares a Manifest V3 extension with the following items:
+
+- The `privacy` permission, which controls the Chrome WebRTC IP handling policy.
 - A background service worker at `src/service-worker.js`.
 - A main-world WebRTC blocker injected on all URLs at `document_start`.
-- A main-world YouTube quality script injected on `youtube.com` frames at
-  `document_start`.
+- A main-world YouTube quality script injected on `youtube.com` frames at `document_start`.
 
 ## Startup behavior
 
-The service worker applies Chrome's WebRTC IP handling policy when:
+The service worker applies the Chrome WebRTC IP handling policy in the following situations:
 
-- the extension is installed,
-- Chrome starts,
-- the service worker is loaded.
+- The extension is installed.
+- Chrome starts.
+- The service worker loads.
 
-The current product has no runtime settings. WebRTC blocking and YouTube quality
-enforcement are always enabled while the extension is enabled.
+The extension exposes no runtime settings. WebRTC blocking and YouTube quality enforcement remain active while the extension is enabled.
 
 ## Content script worlds
 
-Both content scripts run in the main world because they must affect page-owned
-objects:
+Both content scripts run in the main world because the scripts must access page-owned objects:
 
 - WebRTC blocking replaces page-visible constructors.
-- YouTube quality enforcement calls methods exposed by YouTube's page player.
+- YouTube quality enforcement calls methods exposed by the YouTube page player.
 
-The WebRTC blocker runs in all frames, including `about:blank`, `blob:`, and
-`data:` descendants. This keeps generated child frames inside the same blocking
-model.
+The WebRTC blocker runs in all frames, including `about:blank`, `blob:`, and `data:` descendants. This configuration applies the same blocking model to generated child frames.
