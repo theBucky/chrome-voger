@@ -3,6 +3,9 @@
   "name": "Chrome Voger",
   "description": "Block WebRTC connections and force YouTube videos to the highest available quality.",
   "version": "0.1.0",
+  "icons": {
+    "512": "assets/icon-512.png"
+  },
   "permissions": ["privacy"],
   "content_scripts": [
     {
