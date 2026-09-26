@@ -1,13 +1,18 @@
-# Repository Guidelines
+# Repository agent guide
 
-## Working Principles
+## Workflow
 
-- Think from first principles. Start from real requirements, code facts, and verification results; if the goal is unclear, discuss it with the user first.
-- Treat code, not documentation, as the source of truth. Unless the user explicitly says otherwise, do not read ordinary Markdown just to understand the implementation.
-- Before making code changes, read the relevant code and the most recent constraints, and follow the nearest `AGENTS.md` in the directory tree.
-- Keep changes focused. Do not slip in unrelated refactors along the way.
-- When committing, do not add any co-author attribution, and do not reveal the identity of the agent in commit messages, PR descriptions, or any explanatory text.
+- Read code and docs relevant to the change; expand only to resolve dependencies or uncertainty.
+- Complete the requested outcome, not just a first implementation: check the result and fix failures caused by the change. Match verification to the affected behavior; repeat checks only after changes, failures, or unresolved concerns.
+- Continue within the agreed scope without step-by-step approval. Pause for missing access, consequential decisions the request does not settle, or destructive actions not already authorized.
 
-## Reference docs
+## Engineering
 
-- Reach `docs/specs/index.md` for outline; dig `docs/specs/sections` for more details.
+- Prefer the simplest end-to-end solution for current requirements. Extract shared logic only for real reuse or a shared invariant.
+- Preserve runtime behavior during formatting, lint, typing, and test-structure changes.
+
+## Boundaries
+
+- Treat `refs/` as read-only reference material; do not edit or import from that directory.
+- Remove obsolete paths directly; do not add backward-compatibility layers, fallbacks, or migrations.
+- Keep public pull requests, commits, generated files, and documentation free of private names, internal context, customer-derived data, and AI attribution.
