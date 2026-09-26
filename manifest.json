@@ -7,25 +7,23 @@
     "512": "assets/icon-512.png"
   },
   "permissions": ["privacy"],
+  "background": {
+    "service_worker": "src/webrtc-blocking/service-worker.js"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/webrtc-blocker.js"],
+      "js": ["src/webrtc-blocking/content-script.js"],
       "run_at": "document_start",
       "all_frames": true,
-      "match_about_blank": true,
       "match_origin_as_fallback": true,
       "world": "MAIN"
     },
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["src/youtube-quality.js"],
+      "js": ["src/youtube-quality/content-script.js"],
       "run_at": "document_start",
-      "all_frames": true,
       "world": "MAIN"
     }
-  ],
-  "background": {
-    "service_worker": "src/service-worker.js"
-  }
+  ]
 }
