@@ -79,6 +79,22 @@ test("navigation before the player is ready changes nothing", () => {
   assert.equal(tab.player.quality, "auto");
 });
 
+test("a player without the quality setter waits for a later event", () => {
+  const tab = openYouTube("/watch");
+  const { setPlaybackQualityRange, ...loadingPlayer } = player(["hd2160", "hd1080", "auto"]);
+  tab.player = loadingPlayer;
+
+  tab.emit("yt-navigate-finish");
+  tab.emit("loadedmetadata");
+
+  assert.equal(tab.player.quality, "auto");
+
+  tab.player.setPlaybackQualityRange = setPlaybackQualityRange;
+  tab.emit("loadedmetadata");
+
+  assert.equal(tab.player.quality, "hd2160");
+});
+
 test("a player without a known quality level keeps its quality", () => {
   const tab = openYouTube("/watch");
   tab.player = player(["auto"]);

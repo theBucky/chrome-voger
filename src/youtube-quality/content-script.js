@@ -23,8 +23,7 @@
     const levels = player?.getAvailableQualityLevels?.();
     const quality = QUALITY_PRIORITY.find((level) => levels?.includes(level));
     if (quality) {
-      // Equal minimum and maximum pin the player to one quality.
-      player.setPlaybackQualityRange(quality, quality);
+      player.setPlaybackQualityRange?.(quality, quality);
     }
   }
 
