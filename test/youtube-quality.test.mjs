@@ -6,24 +6,18 @@ import vm from "node:vm";
 
 const root = join(import.meta.dirname, "..");
 const manifest = JSON.parse(readFileSync(join(root, "manifest.json"), "utf8"));
-const entry = manifest.content_scripts.find(({ matches }) => matches.includes("*://*.youtube.com/*"));
+const contentScript = manifest.content_scripts.find(({ matches }) => matches.includes("*://*.youtube.com/*"));
 
-// A YouTube tab at `pathname`, with the content script loaded and no player yet.
 function openYouTube(pathname) {
-  const listeners = new Map();
+  const document = new EventTarget();
   const tab = {
     player: null,
     location: { pathname },
-    emit: (type) => listeners.get(type)?.forEach((listener) => listener({ type })),
+    emit: (type) => document.dispatchEvent(new Event(type)),
   };
-  const context = vm.createContext({
-    location: tab.location,
-    document: {
-      addEventListener: (type, listener) => listeners.set(type, [...(listeners.get(type) ?? []), listener]),
-      getElementById: (id) => (id === "movie_player" ? tab.player : null),
-    },
-  });
-  for (const file of entry.js) {
+  document.getElementById = (id) => (id === "movie_player" ? tab.player : null);
+  const context = vm.createContext({ location: tab.location, document });
+  for (const file of contentScript.js) {
     vm.runInContext(readFileSync(join(root, file), "utf8"), context, { filename: file });
   }
   return tab;

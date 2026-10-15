@@ -1,5 +1,5 @@
 (() => {
-  // YouTube can label an 8k stream "highres", so that label outranks the named hd levels.
+  // youtube labels some 8k streams "highres".
   const QUALITY_PRIORITY = [
     "highres",
     "hd4320",
@@ -27,8 +27,7 @@
     }
   }
 
-  // loadedmetadata fires for each new video source, including ads. yt-navigate-finish covers
-  // a video that loaded in the miniplayer before the tab returned to the watch page.
+  // loadedmetadata covers new sources and ads; yt-navigate-finish covers returning from the miniplayer.
   document.addEventListener("loadedmetadata", applyBestQuality, true);
   document.addEventListener("yt-navigate-finish", applyBestQuality);
 })();
