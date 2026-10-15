@@ -6,6 +6,7 @@ import vm from "node:vm";
 
 const root = join(import.meta.dirname, "..");
 const manifest = JSON.parse(readFileSync(join(root, "manifest.json"), "utf8"));
+const contentScript = manifest.content_scripts.find(({ matches }) => matches.includes("<all_urls>"));
 
 function run(files, globals) {
   const context = vm.createContext(globals);
@@ -17,9 +18,15 @@ function run(files, globals) {
 }
 
 function loadPage(globals) {
-  const entry = manifest.content_scripts.find(({ matches }) => matches.includes("<all_urls>"));
-  return run(entry.js, { DOMException, ...globals });
+  return run(contentScript.js, { DOMException, ...globals });
 }
+
+test("the manifest exempts ampcode.com and its subdomains while preserving frame coverage", () => {
+  assert.deepEqual(contentScript.matches, ["<all_urls>"]);
+  assert.deepEqual(contentScript.exclude_matches, ["*://*.ampcode.com/*"]);
+  assert.equal(contentScript.all_frames, true);
+  assert.equal(contentScript.match_origin_as_fallback, true);
+});
 
 test("install sets the WebRTC IP handling policy to disable non-proxied UDP", () => {
   const installListeners = [];
