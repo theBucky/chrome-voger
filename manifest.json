@@ -4,7 +4,9 @@
   "description": "Block WebRTC connections and force YouTube videos to the highest available quality.",
   "version": "0.1.0",
   "icons": {
-    "512": "assets/icon-512.png"
+    "16": "assets/icon-16.png",
+    "48": "assets/icon-48.png",
+    "128": "assets/icon-128.png"
   },
   "permissions": ["privacy"],
   "background": {
